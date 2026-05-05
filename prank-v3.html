@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ERROR 0x000000DEAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    * { cursor: none; }
+  body {
+    background:#000;
+    color:#f00;
+    font-family:'Courier New', monospace;
+    text-align:center;
+    margin:0;
+    overflow:hidden;
+    user-select:none;
+  }
+  #overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:radial-gradient(circle, #300 0%, #000 70%);
+    animation: pulse 0.15s infinite alternate;
+    z-index:-2;
+  }
+  @keyframes pulse {
+    0% { opacity:0.8; }
+    100% { opacity:1; }
+  }
+  #glitchBg {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:repeating-linear-gradient(0deg, #000, #000 2px, #100 2px, #100 4px);
+    opacity:0.3; z-index:-1;
+    animation: scan 0.1s infinite linear;
+  }
+  @keyframes scan {
+    0% { transform:translateY(0); }
+    100% { transform:translateY(4px); }
+  }
+  h1 {
+    font-size:28px;
+    text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+    animation: shake 0.2s infinite;
+  }
+  @keyframes shake {
+    0% { transform:translate(1px,1px); }
+    100% { transform:translate(-1px,-1px); }
+  }
+  #skull {
+    font-size:60px;
+    animation: flicker 0.1s infinite alternate;
+  }
+  @keyframes flicker {
+    0% { opacity:1; }
+    100% { opacity:0.4; }
+  }
+  #akhir {
+    display:none;
+    font-size:18px;
+    color:#f00;
+    text-shadow: 0 0 15px #f00;
+    margin-top:20px;
+  }
+  button {
+    background:#f00; color:#000; border:2px solid #f00;
+    padding:15px 30px; font-family:inherit; font-weight:bold;
+    font-size:20px; box-shadow: 0 0 20px #f00;
+  }
+</style>
+</head>
+<body>
+<div id="overlay"></div>
+<div id="glitchBg"></div>
+
+<div style="padding-top:10%;">
+  <div id="skull">☠</div>
+  <h1>FATAL SYSTEM ERROR</h1>
+  <p id="status">PRESS TO DIAGNOSE</p>
+  <p id="count" style="font-size:30px; font-weight:bold;"></p>
+  <button id="startBtn" onclick="mulai()">CONFIRM</button>
+  <div id="akhir">
+    [ f4m22 de4d ]<br>
+    TERMINAL BREACH DETECTED<br>
+    ALL DATA COMPROMISED<br>
+    <span style="font-size:12px; animation: flicker 0.2s infinite;">GOODBYE</span>
+  </div>
+</div>
+
+<script>
+let persen = 0;
+let audioCtx;
+let sirine;
+
+function bikinSirine() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  sirine = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  sirine.connect(gain);
+  gain.connect(audioCtx.destination);
+  sirine.type = "sawtooth";
+  gain.gain.value = 0.3;
+  sirine.frequency.value = 800;
+  sirine.start();
+
+  let naik = true;
+  setInterval(() => {
+    if (naik) {
+      sirine.frequency.value += 20;
+      if (sirine.frequency.value > 1200) naik = false;
+    } else {
+      sirine.frequency.value -= 20;
+      if (sirine.frequency.value < 800) naik = true;
+    }
+  }, 30);
+}
+
+function geter(pola) {
+  if (navigator.vibrate) navigator.vibrate(pola);
+}
+
+function corruptText() {
+  let chars = "!@#$%^&*()_+-=[]{}|;:,.<>?/█▓▒░";
+  let elements = [document.getElementById("status"), document.getElementById("count")];
+  elements.forEach(el => {
+    if (Math.random() > 0.5) {
+      let txt = el.innerText;
+      let pos = Math.floor(Math.random() * txt.length);
+      el.innerText = txt.substring(0,pos) + chars[Math.floor(Math.random()*chars.length)] + txt.substring(pos+1);
+    }
+  });
+}
+
+async function mulai() {
+  document.getElementById("startBtn").style.display = "none";
+  document.documentElement.requestFullscreen().catch(()=>{});
+
+  bikinSirine();
+  geter([1000]);
+
+  let loading = setInterval(() => {
+    document.getElementById("count").innerText = persen + "% CORRUPTED";
+    document.getElementById("status").innerText = "DESTROYING SECTOR " + Math.floor(Math.random()*9999);
+
+    if (persen % 3 === 0) {
+      geter(100);
+      corruptText();
+    }
+
+    if (persen >= 100) {
+      clearInterval(loading);
+      document.getElementById("status").style.display = "none";
+      document.getElementById("count").style.display = "none";
+      document.getElementById("akhir").style.display = "block";
+      geter([2000]);
+      document.body.style.background = "#200";
+    }
+    persen++;
+  }, 50);
+}
+
+// Cegah klik kanan + F12 biar dramatis
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
+});
+</script>
+</body>
+</html>
